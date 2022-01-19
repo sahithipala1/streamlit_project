@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+yfinance
+altair
+pillow
+lxml
+seaborn
+pybase64
+matplotlib
