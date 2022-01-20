@@ -8,3 +8,4 @@ lxml
 seaborn
 pybase64
 matplotlib
+Watchdog

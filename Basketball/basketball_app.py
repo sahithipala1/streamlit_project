@@ -4,6 +4,11 @@ import base64
 import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
+import ssl
+
+from pandas import DataFrame
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 st.title("NBA Player State Explorer")
 
@@ -24,9 +29,9 @@ selected_year = st.sidebar.selectbox("Year :", list(reversed(range(1950, 2022)))
 
 @st.cache
 def load_data(year):
-    url = f"https://www.basketball-reference.com/leagues/NBA_" + str(year) + " _per_game.html"
-    l= pd.read_html(url, header=0)
-    df =l[0]
+    url = f"https://www.basketball-reference.com/leagues/NBA_{selected_year}_per_game.html"
+    html = pd.read_html(url, header=0)
+    df = html[0]
     raw = df.drop(df[df.Age == "Age"].index)  # Deletes repeating headers in the content
 
     # Set the type column to str to address issues like below.
@@ -49,8 +54,9 @@ selected_team = st.sidebar.multiselect("Team", sorted_unique_team, sorted_unique
 unique_pos = ["C", "PF", "SF", "PG", "SG"]
 selected_pos = st.sidebar.multiselect("position", unique_pos, unique_pos)
 
+print(player_stats)
 df_selected_team = player_stats[
-    (player_stats.Tm.isin(selected_team)) & (player_stats.pos.isin(selected_pos))
+    (player_stats.Tm.isin(selected_team)) & (player_stats.Pos.isin(selected_pos))
     ]
 
 st.header("Display player stats of Selected Team(s)")
@@ -75,6 +81,7 @@ def file_download(df):
 
 
 st.markdown(file_download(df_selected_team), unsafe_allow_html=True)
+print(player_stats.index)
 
 # Heatmap
 if st.button("Inter correlation Heatmap"):
@@ -86,6 +93,6 @@ if st.button("Inter correlation Heatmap"):
     mask = np.zeros_like(corr)
     mask[np.triu_indices_from(mask)] = True
     with sns.axes_style("white"):
-        f = plt.subplots(figsize=(7, 5))
-        ax = sns.heatmap(corr, mask=mask, vmax=1, square=True)
-    st.pyplot(f)
+        fig, ax = plt.subplots(figsize=(7, 5))
+        axe = sns.heatmap(corr, mask=mask, vmax=1, square=True)
+    st.pyplot(fig)
