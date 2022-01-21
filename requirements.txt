@@ -9,3 +9,7 @@ seaborn
 pybase64
 matplotlib
 Watchdog
+beautifulsoup4
+requests
+json
+time
