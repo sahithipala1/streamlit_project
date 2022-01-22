@@ -11,5 +11,4 @@ matplotlib
 Watchdog
 beautifulsoup4
 requests
-json
-time
+sklearn
